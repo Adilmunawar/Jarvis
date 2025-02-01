@@ -13,9 +13,7 @@ def Alert(Text):
     )
 
     toast.set_audio(audio.Default, loop=False)
-\\import turtle from def Alert 
-toast.add_actions(label="click Me", launch="https;//adilmunawar.rf.gd
-
+    
     toast.add_actions(label="Click me", launch="https://www.google.com")
     toast.add_actions(label="Dismiss", launch="https://www.google.com")
 
