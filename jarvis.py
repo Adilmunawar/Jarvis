@@ -1,39 +1,45 @@
 import threading
-from internet_check import is_Online
-from Alert import Alert
-from Data.DLG_Data import online_dlg,offline_dlg
 import random
-from co_brain import Jarvis
-from TextToSpeech.Fast_DF_TTS import speak
-from Automation.Battery  import check_plug
-from Time_Operations.throw_alert import check_schedule,check_Alam
 from os import getcwd
 
-Alam_path = f"{getcwd()}\\Alam_data.txt"
-file_path = f'{getcwd()}\\schedule.txt'
+from internet_check import is_Online
+from Alert import Alert
+from Data.DLG_Data import online_dlg, offline_dlg
+from co_brain import Jarvis
+from TextToSpeech.Fast_DF_TTS import speak
+from Automation.Battery import check_plug
+from Time_Operations.throw_alert import check_schedule, check_Alam
 
+# Define file paths
+ALARM_PATH = f"{getcwd()}\\Alam_data.txt"
+SCHEDULE_PATH = f'{getcwd()}\\schedule.txt'
+
+# Choose random dialogues
 ran_online_dlg = random.choice(online_dlg)
 ran_offline_dlg = random.choice(offline_dlg)
 
+def online_tasks():
+    """Function to handle tasks when online."""
+    threads = [
+        threading.Thread(target=speak, args=(ran_online_dlg,)),
+        threading.Thread(target=check_plug),
+        threading.Thread(target=check_schedule, args=(SCHEDULE_PATH,)),
+        threading.Thread(target=Jarvis),
+        threading.Thread(target=check_Alam, args=(ALARM_PATH,))
+    ]
+
+    for thread in threads:
+        thread.start()
+
+    for thread in threads:
+        thread.join(
 
 def main():
+    """Main function to check internet connection and perform tasks."""
     if is_Online():
-        t1 = threading.Thread(target=speak,args=(ran_online_dlg,))
-        t3 = threading.Thread(target=check_plug)
-        t4 = threading.Thread(target=check_schedule,args=(file_path,))
-        t5 = threading.Thread(target=Jarvis)
-        t6 = threading.Thread(target=check_Alam,args=(Alam_path,))
-        t1.start()
-        t1.join()
-        t3.start()
-        t4.start()
-        t5.start()
-        t6.start()
-        t3.join()
-        t4.join()
-        t5.join()
-        t6.join()
+        online_tasks()
     else:
         Alert(ran_offline_dlg)
 
-main()
+if __name__ == "__main__":
+    main()
