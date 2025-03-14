@@ -32,7 +32,7 @@ def online_tasks():
         thread.start()
 
     for thread in threads:
-        thread.join(
+        thread.join()
 
 def main():
     """Main function to check internet connection and perform tasks."""
